@@ -1,0 +1,21 @@
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Secrets: real env files hold API keys. Only the templates are committed.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Client material marked "Confidential"
+Aironauts_AI_Engineer_Technical_Assignment.pdf
+
+# OS / editor / logs
+.DS_Store
+.vscode/
+.idea/
+*.log

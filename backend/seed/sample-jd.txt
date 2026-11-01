@@ -1,0 +1,17 @@
+Senior React Engineer — Aironauts Technologies (Dhaka, hybrid)
+
+We are hiring a Senior React Engineer to build our recruiter console.
+
+Must have:
+- 5+ years of React and TypeScript
+- State management (Redux, Zustand or React Query)
+- Testing with Jest / React Testing Library
+
+Nice to have:
+- Next.js
+- Node.js / Express
+- Design systems and Tailwind CSS
+
+Seniority: Senior
+Location: Dhaka, Bangladesh (hybrid, 2 days remote per week)
+Salary: BDT 250,000 – 350,000 per month

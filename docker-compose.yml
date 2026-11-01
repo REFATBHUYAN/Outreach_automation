@@ -1,0 +1,55 @@
+# Full stack: `docker compose up --build` → UI http://localhost:5173, API http://localhost:4000
+# Tests in containers: `npm run docker:test` (profile "test").
+services:
+  mongo:
+    image: mongo:8
+    volumes: [mongo:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      retries: 20
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 20
+  backend:
+    build: ./backend
+    env_file: [{ path: ./backend/.env, required: false }]
+    environment:
+      MONGO_URL: mongodb://mongo:27017/recruiter
+      REDIS_URL: redis://redis:6379
+    ports: ["4000:4000"]
+    depends_on:
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/health"]
+      interval: 5s
+      retries: 20
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000/api
+    ports: ["5173:80"]
+    depends_on:
+      backend: { condition: service_healthy }
+
+  backend-test:
+    profiles: [test]
+    build: { context: ./backend, target: build }
+    command: sh -c "npm test && npm run test:e2e"
+    environment:
+      E2E_MONGO_URL: mongodb://mongo:27017/recruiter_e2e
+      E2E_REDIS_URL: redis://redis:6379/1
+    depends_on:
+      mongo: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  frontend-test:
+    profiles: [test]
+    build: { context: ./frontend, target: build }
+    command: npm test
+volumes:
+  mongo:

@@ -1,0 +1,9 @@
+name,email,profileUrl,headline,location
+Sample Candidate 01,candidate01@example.com,https://www.linkedin.com/in/sample-candidate-01,Senior React Engineer - 7 yrs React/TypeScript/Next.js,Dhaka
+Sample Candidate 02,candidate02@example.com,https://www.linkedin.com/in/sample-candidate-02,"Frontend Developer - React, Redux, Jest",Remote
+Sample Candidate 03,candidate03@example.com,,"Full-stack Engineer - Node.js, React, MongoDB",Chittagong
+Sample Candidate 04,candidate04@example.com,https://www.linkedin.com/in/sample-candidate-04,Junior Web Developer - HTML/CSS/jQuery,Dhaka
+Sample Candidate 05,candidate05@example.com,,Mobile Engineer - React Native and TypeScript,Remote
+Sample Candidate 06,,https://www.linkedin.com/in/sample-candidate-06,Senior Frontend Engineer - Vue and React,Sylhet
+Sample Candidate 07,candidate07@example.com,,Backend Engineer - Java Spring,Dhaka
+Sample Candidate 08,candidate01@example.com,,Duplicate email row (should be deduped),Dhaka

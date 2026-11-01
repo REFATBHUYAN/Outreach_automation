@@ -1,0 +1,12 @@
+#!/bin/sh
+# Blocks commits that contain env files or API-key-shaped strings.
+fail=0
+envs=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)\.env(\..*)?$' | grep -v '\.env\.example$')
+if [ -n "$envs" ]; then
+  echo "pre-commit: refusing to commit env files (they hold API keys):"; echo "$envs" | sed 's/^/  /'; fail=1
+fi
+keys=$(git diff --cached -U0 --diff-filter=ACM | grep -E '^\+' | grep -nE 'sk-(ant-|proj-)?[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY')
+if [ -n "$keys" ]; then
+  echo "pre-commit: staged changes contain something that looks like an API key or private key."; fail=1
+fi
+[ $fail -eq 0 ] || { echo "Unstage it (git rm --cached <file>) and keep secrets in .env only."; exit 1; }

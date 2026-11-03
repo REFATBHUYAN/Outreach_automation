@@ -6,6 +6,24 @@ import { STATUSES } from '../services/pipeline';
 import { changeStatus, logActivity } from '../services/candidates.service';
 import { sendReply } from '../services/replies.service';
 import { replyQueue } from '../queues/queues';
+import { publish } from '../services/events';
+
+/** Recruiter adds or fixes contact details (web search never returns emails). */
+export const updateCandidate = ah(async (req, res) => {
+  const { email } = validate(z.object({ email: z.string().trim().toLowerCase().email() }), req.body);
+  const c = await Candidate.findById(req.params.id);
+  if (!c) throw new HttpError(404, 'Candidate not found');
+  c.email = email;
+  try {
+    await c.save();
+  } catch (e) {
+    if ((e as { code?: number }).code === 11000) throw new HttpError(409, 'Another candidate for this job already has that email');
+    throw e;
+  }
+  await logActivity({ jobId: c.jobId, candidateId: c._id, candidateName: c.name, type: 'contact_updated', actor: 'recruiter', via: 'ui', note: `Email set to ${email}` });
+  publish({ type: 'candidate', jobId: String(c.jobId), candidateId: String(c._id) });
+  res.json(c);
+});
 
 export const updateStatus = ah(async (req, res) => {
   const { status, note } = validate(z.object({ status: z.enum(STATUSES), note: z.string().max(1000).optional() }), req.body);

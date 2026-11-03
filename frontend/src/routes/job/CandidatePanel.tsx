@@ -12,6 +12,10 @@ export function CandidatePanel({ candidate: c, onChange }: { candidate: Candidat
   const [next, setNext] = useState<Status | ''>('');
   const [note, setNote] = useState('');
   const [reply, setReply] = useState('');
+  const [email, setEmail] = useState(c.email ?? '');
+  useEffect(() => {
+    setEmail(c.email ?? '');
+  }, [c.email]);
   const [draft, setDraft] = useState(c.pendingReply);
   const [msg, setMsg] = useState<{ ok?: string; error?: string }>({});
   useEffect(() => {
@@ -36,6 +40,16 @@ export function CandidatePanel({ candidate: c, onChange }: { candidate: Candidat
           {c.query && <p className="font-mono text-2xs text-muted-foreground">{c.query}</p>}
         </div>
       )}
+
+      <div className="flex flex-col gap-2">
+        <Field label="Email">
+          <div className="grid grid-content-action gap-2">
+            <Input type="email" placeholder="Needed for outreach" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Button size="sm" variant="outline" className="h-auto" disabled={!email.trim() || email === c.email}
+              onClick={() => run(api(`/candidates/${c._id}`, { method: 'PATCH', json: { email } }), 'Email saved')}>Save</Button>
+          </div>
+        </Field>
+      </div>
 
       {c.allowedNext.length > 0 && (
         <div className="flex flex-col gap-2">

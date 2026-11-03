@@ -8,9 +8,9 @@ import { api } from '../../lib/api';
 import { forJob, useApi } from '../../lib/useApi';
 import type { Candidate, Job } from '../../lib/types';
 import { CandidatePanel } from './CandidatePanel';
-import { CampaignList } from './CampaignList';
 import { ActivityLog } from './ActivityLog';
 import { SourcingPanel } from './SourcingPanel';
+import { OutreachPanel } from './OutreachPanel';
 
 export function Component() {
   const { jobId = '' } = useParams();
@@ -51,8 +51,7 @@ export function Component() {
         <section className="flex min-w-0 flex-col gap-4">
           <SectionTitle>Candidates</SectionTitle>
           <CandidateTable jobId={jobId} selectedId={selectedId} onSelect={(c) => setSelectedId(c._id)} />
-          <SectionTitle>Campaigns</SectionTitle>
-          <CampaignList jobId={jobId} />
+          <OutreachPanel jobId={jobId} candidates={candidates} />
         </section>
         <aside className="flex flex-col gap-4 xl:sticky xl:top-5 xl:self-start">
           {selected ? <CandidatePanel candidate={selected} onChange={() => { reloadCandidates(); reload(); }} /> : <EmptyState title="Select a candidate">Click Details to change status, simulate a reply or approve a draft.</EmptyState>}

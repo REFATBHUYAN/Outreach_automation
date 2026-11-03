@@ -11,7 +11,7 @@ export function CampaignList({ jobId }: { jobId: string }) {
     <DataTable
       rows={data}
       rowKey={(c) => c._id}
-      empty="No campaigns yet — ask the AI to create one"
+      empty="No campaigns yet — write drafts above, or ask in chat"
       columns={[
         { header: 'Created', cell: (c) => formatDate(c.createdAt) },
         { header: 'Status', cell: (c) => <Badge tone={c.status === 'active' ? 'success' : c.status === 'paused' ? 'warning' : 'neutral'}>{c.status}</Badge> },

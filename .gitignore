@@ -19,3 +19,6 @@ Aironauts_AI_Engineer_Technical_Assignment.pdf
 .vscode/
 .idea/
 *.log
+
+# Local test data with real personal emails
+*.local.csv

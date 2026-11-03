@@ -1,5 +1,5 @@
 # AI Recruiting Co-Worker
-
+claude --resume fe6a8049-ad50-4f59-a88f-e42b61e2a5eb
 One repository, two apps:
 
 - [`backend/`](backend) — Express + BullMQ + MongoDB + LLM agent (Claude or OpenAI). **Main README: architecture, agent design, mocks, trade-offs.**

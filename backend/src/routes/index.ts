@@ -30,13 +30,17 @@ router.post('/jobs/:id/source', jobs.source);
 router.post('/jobs/:id/score', jobs.scoreUnscored);
 router.get('/jobs/:id/sourcing', jobs.latestSourcing);
 
+router.patch('/candidates/:id', candidates.updateCandidate);
 router.patch('/candidates/:id/status', candidates.updateStatus);
 router.post('/candidates/:id/reply', candidates.approveReply);
 router.get('/candidates/:id/booking', candidates.getBooking);
 router.post('/candidates/:id/book', candidates.book);
 router.post('/simulate-reply', candidates.simulateReply);
 
+router.post('/jobs/:id/campaigns', campaigns.create);
 router.get('/campaigns/:id', campaigns.getCampaign);
+router.post('/campaigns/:id/approve', campaigns.approve);
+router.post('/campaigns/:id/cancel', campaigns.cancel);
 router.put('/campaigns/:id/drafts', campaigns.saveDrafts);
 router.post('/campaigns/:id/pause', campaigns.pause);
 router.post('/campaigns/:id/resume', campaigns.resume);

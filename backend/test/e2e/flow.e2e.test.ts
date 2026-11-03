@@ -241,6 +241,24 @@ describe('full flow: JD → hire', () => {
     expect(cs.find((c) => c.name === 'Web Person B')).toMatchObject({ education: 'BUET', query: q.queries[1] });
   });
 
+  it('job-page outreach: add email, accept, draft with AI, approve, send', async () => {
+    const job = (await Job.findOne({ title: 'Platform Engineer' }))!;
+    const jobId = String(job._id);
+    const [a, b] = await Promise.all(['Web Person A', 'Web Person B'].map((name) => Candidate.findOne({ jobId, name })));
+    expect((await call(`/candidates/${a!._id}`, { method: 'PATCH', json: { email: 'not-an-email' } })).status).toBe(400);
+    expect((await call(`/candidates/${a!._id}`, { method: 'PATCH', json: { email: 'A@Example.com' } })).body.email).toBe('a@example.com');
+    for (const c of [a, b]) expect((await patchStatus(String(c!._id), 'accepted')).status).toBe(200);
+
+    const created = await post(`/jobs/${jobId}/campaigns`, { steps: [{ day: 0, instructions: 'mention Go' }], dailyLimit: 10 });
+    expect(created.status).toBe(201);
+    expect(created.body.drafts.map((d: { name: string }) => d.name)).toEqual(['Web Person A']); // B has no email
+    const drafts = created.body.drafts.map((d: object) => ({ ...d, subject: 'Platform role at Aironauts' }));
+    expect((await post(`/campaigns/${created.body._id}/approve`, { drafts })).body.status).toBe('active');
+    await until(async () => (await Candidate.findById(a!._id))?.status === 'contacted', 'job-page campaign send');
+    expect((await Candidate.findById(a!._id))!.thread[0].subject).toBe('Platform role at Aironauts');
+    expect((await Candidate.findById(b!._id))!.status).toBe('accepted');
+  });
+
   it('"New chat" hides the conversation but keeps jobs, candidates and sourcing progress', async () => {
     const before = (await call<any[]>(`/jobs/${state.jobId}/candidates`)).body.length; // eslint-disable-line @typescript-eslint/no-explicit-any
     const { body } = await post('/messages/clear');
